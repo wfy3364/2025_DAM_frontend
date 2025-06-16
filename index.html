@@ -20,7 +20,6 @@
             <div class="card-header">
                 <h2 class="card-title"><i class="fa fa-edit"></i> 数据输入</h2>
                     <div class="btn-group">
-                        <!-- 新增切换按钮 -->
                         <button class="btn btn-secondary" id="toggle-input-method">使用CSV上传</button>
                         <button class="btn btn-primary" id="add-row">
                             <i class="fa fa-plus"></i> 添加行
@@ -31,7 +30,6 @@
                     </div>
             </div>
 
-            <!-- 包裹表格输入区域（默认显示） -->
             <div class="input-container table-input-container">
                 <div class="table-container">
                     <table id="input-table">
@@ -83,7 +81,6 @@
                 </div>
             </div>
 
-            <!-- 包裹CSV上传区域（默认隐藏，添加d-none类） -->
             <div class="input-container csv-input-container d-none">
                 <div class="file-upload">
                     <input type="file" id="csv-upload" accept=".csv">
@@ -125,10 +122,12 @@
                             <th>HbA1c</th>
                             <th>血糖水平</th>
                             <th>糖尿病预测<br><small>(0/1)</small></th>
+                            <th>脂肪肝风险</th>
+                            <th>代谢风险</th>
+                            <th>健康分析</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- 结果将通过JS动态填充 -->
                     </tbody>
                 </table>
             </div>
