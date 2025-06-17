@@ -20,13 +20,13 @@
             <div class="card-header">
                 <h2 class="card-title"><i class="fa fa-edit"></i> 数据输入</h2>
                     <div class="btn-group">
-                        <button class="btn btn-secondary" id="toggle-input-method">使用CSV上传</button>
                         <button class="btn btn-primary" id="add-row">
                             <i class="fa fa-plus"></i> 添加行
                         </button>
                         <button class="btn btn-danger" id="delete-row">
                             <i class="fa fa-trash"></i> 删除行
                         </button>
+                        <button class="btn btn-secondary" id="toggle-input-method">使用CSV上传</button>
                     </div>
             </div>
 
@@ -36,11 +36,11 @@
                         <thead>
                             <tr>
                                 <th width="30"><input type="checkbox" id="select-all"></th>
-                                <th>性别<br><small>(Male/Female)</small></th>
+                                <th>性别</th>
                                 <th>年龄<br><small>(小数)</small></th>
-                                <th>高血压<br><small>(0/1)</small></th>
-                                <th>心脏病<br><small>(0/1)</small></th>
-                                <th>吸烟史<br><small>(Former/Current/Never/No Info)</small></th>
+                                <th>高血压</th>
+                                <th>心脏病</th>
+                                <th>吸烟史</th>
                                 <th>BMI<br><small>(小数)</small></th>
                                 <th>HbA1c<br><small>(小数)</small></th>
                                 <th>血糖水平<br><small>(整数)</small></th>
@@ -52,27 +52,37 @@
                                 <td>
                                     <select>
                                         <option value="">--选择--</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
+                                        <option value="Male">男</option>
+                                        <option value="Female">女</option>
+                                        <option value="Other">其他</option>
                                     </select>
                                 </td>
                                 <td><input type="number" step="0.1" min="0" placeholder="例如: 45.2"></td>
                                 <td>
                                     <select>
                                         <option value="">--选择--</option>
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
+                                        <option value="0">否</option>
+                                        <option value="1">是</option>
                                     </select>
                                 </td>
                                 <td>
                                     <select>
                                         <option value="">--选择--</option>
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
+                                        <option value="0">否</option>
+                                        <option value="1">是</option>
                                     </select>
                                 </td>
-                                <td><input type="text" placeholder="例如: current"></td>
+                                <td>
+                                    <select>
+                                        <option value="">--选择--</option>
+                                        <option value="current">current</option>
+                                        <option value="former">former</option>
+                                        <option value="not current">not current</option>
+                                        <option value="never">never</option>
+                                        <option value="ever">ever</option>
+                                        <option value="No Info">No Info</option>
+                                    </select>
+                                </td>
                                 <td><input type="number" step="0.1" min="0" placeholder="例如: 28.3"></td>
                                 <td><input type="number" step="0.1" min="0" placeholder="例如: 6.5"></td>
                                 <td><input type="number" min="0" placeholder="例如: 150"></td>
@@ -88,7 +98,7 @@
                     <label for="csv-upload">
                         <i class="fa fa-file-csv"></i>
                         <span>点击或拖拽CSV文件到此处上传</span>
-                        <small>支持格式：.csv（表头必须符合要求）</small>
+                        <small>支持格式：.csv</small>
                     </label>
                 </div>
             </div>

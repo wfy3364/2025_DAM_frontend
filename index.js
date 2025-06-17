@@ -18,9 +18,10 @@ document.addEventListener('DOMContentLoaded', function () {
     toggleBtn.addEventListener('click', () => {
         tableInputContainer.classList.toggle('d-none');
         csvInputContainer.classList.toggle('d-none');
-        toggleBtn.textContent = tableInputContainer.classList.contains('d-none')
-            ? '使用表格输入'
-            : '使用CSV上传';
+        const isCsv = tableInputContainer.classList.contains('d-none');
+        addRowBtn.style.display = isCsv ? 'none' : 'inline-block';
+        deleteRowBtn.style.display = isCsv ? 'none' : 'inline-block';
+        toggleBtn.textContent = isCsv ? '使用表格输入' : '使用CSV上传';
     });
 
     addRowBtn.addEventListener('click', function () {
@@ -32,15 +33,37 @@ document.addEventListener('DOMContentLoaded', function () {
             <td>
                 <select>
                     <option value="">--选择--</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
+                    <option value="Male">男</option>
+                    <option value="Female">女</option>
+                    <option value="Other">其他</option>
                 </select>
             </td>
-            <td><input type="number" step="0.01" min="0" placeholder="例如: 45.20"></td>
-            <td><select><option value="">--选择--</option><option value="0">0</option><option value="1">1</option></select></td>
-            <td><select><option value="">--选择--</option><option value="0">0</option><option value="1">1</option></select></td>
-            <td><input type="text" placeholder="例如: current"></td>
+            <td><input type="number" step="0.01" min="0" placeholder="例如: 45.2"></td>
+            <td>
+                <select>
+                    <option value="">--选择--</option>
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </td>
+            <td>
+                <select>
+                    <option value="">--选择--</option>
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </td>
+            <td>
+                <select>
+                    <option value="">--选择--</option>
+                    <option value="current">current</option>
+                    <option value="former">former</option>
+                    <option value="not current">not current</option>
+                    <option value="never">never</option>
+                    <option value="ever">ever</option>
+                    <option value="No Info">No Info</option>
+                </select>
+            </td>
             <td><input type="number" step="0.01" min="0" placeholder="例如: 28.30"></td>
             <td><input type="number" step="0.01" min="0" placeholder="例如: 6.50"></td>
             <td><input type="number" min="0" placeholder="例如: 150"></td>
@@ -128,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const age = cells[2].querySelector('input').value;
                 const hypertension = cells[3].querySelector('select').value;
                 const heartDisease = cells[4].querySelector('select').value;
-                const smokingHistory = cells[5].querySelector('input').value;
+                const smokingHistory = cells[5].querySelector('select').value;
                 const bmi = cells[6].querySelector('input').value;
                 const hba1c = cells[7].querySelector('input').value;
                 const bloodGlucose = cells[8].querySelector('input').value;
