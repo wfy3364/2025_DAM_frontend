@@ -192,6 +192,10 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify(data)
         })
        .then(response => response.json())
+       .catch(error => {
+            inputStatus.textContent = "服务器错误: " + error.message;
+            inputStatus.className = "status-bar status-error";
+        })
        .then(data => {
             if (data.error) {
                 inputStatus.textContent = "服务器错误: " + data.error;
@@ -199,37 +203,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
             const resultData = data.map(item => {
-                const NAFLD_score = sigmoid((item.HbA1c_level - 5.5) / 1.0);
+                console.log(item);
+                const NAFLD_score = 1 / (1 + Math.exp(-0.15 * (item.HbA1c_level + 0.2 * item.bmi - 8)));
                 const MetS_hits = [
-                    item.bmi >= 30,
+                    (item.gender === 'Male' && item.bmi >= 27.5) || (item.gender === 'Female' && item.age >= 25),
                     item.hypertension === 1,
-                    item.blood_glucose_level >= 100,
                     item.HbA1c_level >= 5.7
                 ];
+                console.log(MetS_hits);
                 const MetS_score = MetS_hits.filter(Boolean).length / 4;
 
                 let MetS_level = '低';
-                if (MetS_score === 1) MetS_level = '极高';
-                else if (MetS_score >= 0.75) MetS_level = '高';
-                else if (MetS_score >= 0.5) MetS_level = '中';
+                if (MetS_score >= 0.7) MetS_level = '高';
+                else if (MetS_score >= 0.3) MetS_level = '中';
 
-                return { ...item, diabetes, NAFLD_score, MetS_score, MetS_hits, MetS_level };
+                return { ...item, NAFLD_score, MetS_score, MetS_hits, MetS_level };
             });
 
             displayResults(resultData);
-            displayResults(data);
             inputStatus.textContent = `成功处理 ${data.length} 条数据`;
             inputStatus.className = "status-bar status-success";
-        })
-        .catch(error => {
-            inputStatus.textContent = "服务器错误: " + error.message;
-            inputStatus.className = "status-bar status-error";
         });
     });
-
-    function sigmoid(x) {
-        return 1 / (1 + Math.exp(-x));
-    }
 
     function displayResults(data) {
         const tbody = resultTable.querySelector('tbody');
@@ -246,9 +241,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 <td>${item.HbA1c_level}</td>
                 <td>${item.blood_glucose_level}</td>
                 <td style="font-weight: bold; color: ${item.diabetes === 1 ? '#e74c3c' : '#2ecc71'}">${item.diabetes}</td>
-                <td title="HbA1c >= 5.5 时脂肪肝风险上升">${(item.NAFLD_score * 100).toFixed(1)}%</td>
-                <td title="命中 ${item.MetS_hits.filter(Boolean).length} 项：${['BMI>=30', '高血压', '血糖>=100', 'HbA1c>=5.7'].filter((_, i) => item.MetS_hits[i]).join('，')}">${item.MetS_level}</td>
-                <td><button class="btn btn-secondary" onclick="showHealthReport(${index})">分析</button></td>
+                <td title="HbA1c >= 5.7 时脂肪肝风险上升">${(item.NAFLD_score * 100).toFixed(1)}%</td>
+                <td title="命中 ${item.MetS_hits.filter(Boolean).length} 项：${['BMI超标', '高血压', 'HbA1c>=5.7'].filter((_, i) => item.MetS_hits[i]).join('，')}">${item.MetS_level}</td>
             `;
             tbody.appendChild(row);
         });
@@ -261,15 +255,6 @@ document.addEventListener('DOMContentLoaded', function () {
         window.latestResults = data;
     }
 
-    window.showHealthReport = function (index) {
-        const item = window.latestResults[index];
-        alert(`【健康分析报告】\n` +
-            `年龄：${item.age}，性别：${item.gender}\n` +
-            `糖尿病预测：${item.diabetes ? '是' : '否'}\n` +
-            `脂肪肝风险：${(item.NAFLD_score * 100).toFixed(1)}%，代谢风险等级：${item.MetS_level}\n` +
-            `BMI: ${item.bmi}，HbA1c: ${item.HbA1c_level}，血糖: ${item.blood_glucose_level}`);
-    };
-
     downloadCsvBtn.addEventListener('click', function () {
         const rows = resultTable.querySelectorAll('tbody tr');
         if (rows.length === 0) {
@@ -278,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        let csvContent = "性别,年龄,高血压,心脏病,吸烟史,BMI,HbA1c,血糖水平,糖尿病预测,NAFLD风险,MetS等级\n";
+        let csvContent = "性别,年龄,高血压,心脏病,吸烟史,BMI,HbA1c,血糖水平,糖尿病预测,脂肪肝风险,代谢风险\n";
         rows.forEach(row => {
             const cols = row.querySelectorAll('td');
             const rowData = [];
