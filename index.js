@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <option value="">--选择--</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
+                    <option value="Other">Other</option>
                 </select>
             </td>
             <td><input type="number" step="0.01" min="0" placeholder="例如: 45.20"></td>
@@ -160,9 +161,21 @@ document.addEventListener('DOMContentLoaded', function () {
         inputStatus.textContent = "正在处理数据...";
         inputStatus.className = "status-bar";
 
-        setTimeout(() => {
+        fetch('http://localhost:5000/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+       .then(response => response.json())
+       .then(data => {
+            if (data.error) {
+                inputStatus.textContent = "服务器错误: " + data.error;
+                inputStatus.className = "status-bar status-error";
+                return;
+            }
             const resultData = data.map(item => {
-                const diabetes = Math.random() > 0.5 ? 1 : 0;
                 const NAFLD_score = sigmoid((item.HbA1c_level - 5.5) / 1.0);
                 const MetS_hits = [
                     item.bmi >= 30,
@@ -181,9 +194,14 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             displayResults(resultData);
+            displayResults(data);
             inputStatus.textContent = `成功处理 ${data.length} 条数据`;
             inputStatus.className = "status-bar status-success";
-        }, 1500);
+        })
+        .catch(error => {
+            inputStatus.textContent = "服务器错误: " + error.message;
+            inputStatus.className = "status-bar status-error";
+        });
     });
 
     function sigmoid(x) {
